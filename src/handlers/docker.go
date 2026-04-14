@@ -8,12 +8,13 @@ import (
 	"strings"
 	"time"
 
+	"hubproxy/config"
+	"hubproxy/utils"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"hubproxy/config"
-	"hubproxy/utils"
 )
 
 // DockerProxy Docker代理配置
@@ -43,6 +44,10 @@ func (rd *RegistryDetector) detectRegistryDomain(c *gin.Context, path string) (s
 			remainingPath := strings.TrimPrefix(path, domain+"/")
 			return domain, remainingPath
 		}
+	}
+
+	if _, exist := cfg.Registries["docker.io"]; exist {
+		return "docker.io", path
 	}
 
 	return "", path
